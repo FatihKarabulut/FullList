@@ -1,0 +1,125 @@
+// ==UserScript==
+// @name         SigmaLLY Makro
+// @namespace    http://tampermonkey.net/
+// @version      2.5
+// @description  SigmaLLY oyununda otomatik işlem yapar, "e" tuşuna basıldığında hızlı bir şekilde "w" tuşuna basar, "d" tuşuna basıldığında sadece bir kez "space" tuşuna 4 defa basar. "q" tuşuna basıldığında "w" tuşuna basmayı durdurur. "r" tuşuna basıldığında hızlıca 2 defa "space" tuşuna basar.
+// @author       Siz
+// @match        https://one.sigmally.com/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    let spaceKeyPressInterval; // space tuşuna basma aralığını saklamak için değişken
+    let wKeyPressInterval;     // w tuşuna basma aralığını saklamak için değişken
+
+    // Klavye tuşuna basıldığında çalışacak işlev
+    document.addEventListener('keydown', function(event) {
+        // "e" tuşuna basıldığında
+        if (event.key === 'e' || event.key === 'E') {
+            // w tuşuna hızlı bir şekilde sürekli basma işlevini başlat
+            startPressingWKey();
+        }
+        // "q" tuşuna basıldığında
+        else if (event.key === 'q' || event.key === 'Q') {
+            // w tuşuna basmayı durdur
+            stopPressingWKey();
+        }
+        // "d" tuşuna basıldığında
+        else if (event.key === 'd' || event.key === 'D') {
+            // space tuşuna sadece bir kez 4 kez basma işlevini çağır
+            pressSpaceKeyOnce(4);
+        }
+        // "r" tuşuna basıldığında
+        else if (event.key === 'r' || event.key === 'R') {
+            // space tuşuna sadece bir kez 2 kez basma işlevini çağır
+            pressSpaceKeyOnce(2);
+        }
+    });
+
+    // "w" tuşuna sürekli basma işlevini başlat
+    function startPressingWKey() {
+        // Eğer zaten w tuşuna basılıyorsa, işlemi sonlandır
+        if (wKeyPressInterval) return;
+
+        // w tuşuna hızlı bir şekilde sürekli basma işlevini başlat
+        wKeyPressInterval = setInterval(() => {
+            pressWKeyQuickly();
+        }, 50); // 50ms aralıkla w tuşuna basma
+    }
+
+    // "w" tuşuna basmayı durdurma işlevi
+    function stopPressingWKey() {
+        if (wKeyPressInterval) {
+            clearInterval(wKeyPressInterval);
+            wKeyPressInterval = null;
+        }
+    }
+
+    // "w" tuşuna hızlı bir şekilde basma işlevi
+    function pressWKeyQuickly() {
+        // "w" tuşuna basma olayını oluştur ve gönder
+        var wKeyDownEvent = new KeyboardEvent('keydown', {
+            key: 'w',
+            code: 'KeyW',
+            keyCode: 87,
+            which: 87,
+            bubbles: true
+        });
+
+        var wKeyUpEvent = new KeyboardEvent('keyup', {
+            key: 'w',
+            code: 'KeyW',
+            keyCode: 87,
+            which: 87,
+            bubbles: true
+        });
+
+        // Olayı belgeye gönder
+        document.dispatchEvent(wKeyDownEvent);
+        setTimeout(() => document.dispatchEvent(wKeyUpEvent), 20); // 20ms gecikme ile bırakma olayı
+    }
+
+    // "space" tuşuna birden fazla kez basma işlevi
+    function pressSpaceKeyOnce(times) {
+        // Eğer zaten space tuşuna basılıyorsa, işlemi sonlandır
+        if (spaceKeyPressInterval) return;
+
+        // space tuşuna hızlı bir şekilde belirli kez basma işlevini başlat
+        let count = 0;
+        spaceKeyPressInterval = setInterval(() => {
+            count++;
+            if (count > times) {
+                clearInterval(spaceKeyPressInterval);
+                spaceKeyPressInterval = null;
+            } else {
+                pressSpaceKeyQuickly();
+            }
+        }, 20);
+    }
+
+    // "space" tuşuna hızlı bir şekilde basma işlevi
+    function pressSpaceKeyQuickly() {
+        // "space" tuşuna basma olayını oluştur ve gönder
+        var spaceKeyDownEvent = new KeyboardEvent('keydown', {
+            key: ' ',
+            code: 'Space',
+            keyCode: 32,
+            which: 32,
+            bubbles: true
+        });
+
+        var spaceKeyUpEvent = new KeyboardEvent('keyup', {
+            key: ' ',
+            code: 'Space',
+            keyCode: 32,
+            which: 32,
+            bubbles: true
+        });
+
+        // Olayı belgeye gönder
+        document.dispatchEvent(spaceKeyDownEvent);
+        setTimeout(() => document.dispatchEvent(spaceKeyUpEvent), 10); // 10ms gecikme ile bırakma olayı
+    }
+})();
