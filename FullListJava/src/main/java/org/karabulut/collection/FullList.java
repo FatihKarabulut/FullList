@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class FullList<T> implements Iterable<T>{
     private final int m_Capasity = 10;
@@ -436,34 +438,7 @@ public class FullList<T> implements Iterable<T>{
         return val.isEmpty() ? -1 : val.getAsInt();
     }
 
-    public int digitSum()
-    {
-
-       return Arrays.stream(m_Middle).filter(b -> b instanceof Integer).mapToInt(a -> (Integer) a).sum();
-    }
-
-    public int digitSumFirst()
-    {
-        return Arrays.stream(m_FirstList).filter(b -> b instanceof Integer).mapToInt(a -> (Integer) a).sum();
-    }
-    public int digitSumLast()
-    {
-        return Arrays.stream(m_LastList).filter(b -> b instanceof Integer).mapToInt(a -> (Integer) a).sum();
-    }
-    public void distinct()
-    {
-
-        var temp = (T[]) Arrays.stream(m_Middle).distinct().toArray();
-        clear();
-        for (T t : temp)
-        {
-
-            m_Middle[m_Idx_middle++] = t;
-            m_Id_middle++;
-        }
-       m_Middle[--m_Idx_middle] = null;
-
-    }
+    // The distinct method is applied solely to operate on the specific dataset (first, middle, last)
     public void distinctFirst()
     {
         var temp = (T[] )Arrays.stream(m_FirstList).distinct().toArray();
@@ -491,6 +466,19 @@ public class FullList<T> implements Iterable<T>{
 
     }
 
-    ////
+    public Stream<T> stream()
+    {
+        return StreamSupport.stream(spliterator(),false);
+    }
+
+    @Override
+    public String toString() {
+        var sb = new StringBuilder();
+
+        this.forEach(i -> {sb.append(i).append(" ");});
+        return String.format("%s", sb.toString());
+    }
+
+    //...
 
 }

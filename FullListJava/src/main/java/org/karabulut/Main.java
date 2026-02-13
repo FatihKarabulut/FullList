@@ -7,17 +7,12 @@ public class Main {
         var list = new FullList<Integer>();
         var list1 = new FullList<Integer>();
 
-        list.add(50);
-        list.add(100);
-        list.add(100);
-        list.add(100);
-        list.add(10);
+        list.add(1);
+        list.add(12);
+        list.add(123);
 
-        list.forEach(a -> System.out.println(a));
-        System.out.println("----------------");
-        list.distinct();
-        list.forEach(a -> System.out.println(a));
-        System.out.println("----------------");
+
+        System.out.println(list);
 
     }
 }
